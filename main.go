@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -11,50 +10,81 @@ import (
 	"path"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/urfave/cli"
 	yml "gopkg.in/yaml.v2"
 )
 
-var (
-	confFile  = flag.String("c", "~/.spl.yml", "path to config file")
-	sLocation = flag.Bool("s", true, "print short location name")
-	serverID  = flag.Int64("S", 0, "detail information about the server")
-	conf      config
-)
+var conf config
 
 func main() {
 	log.SetFlags(log.Ldate | log.Lmicroseconds | log.Lshortfile)
-	flag.Parse()
 
-	conf.read(*confFile)
-	conf.check()
-
-	if *serverID > 0 {
-		detailInfoAboutServer()
-		return
+	app := cli.NewApp()
+	app.HideHelp = true
+	app.Author = "Konstantin Kruglov"
+	app.Email = "kruglovk@gmail.com"
+	app.Version = "1.0.0"
+	app.Before = initial
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "conf, c",
+			Value: "~/.spl.yml",
+			Usage: "path to config file",
+		},
+	}
+	app.Commands = []cli.Command{
+		{
+			Name:    "hardware",
+			Aliases: []string{"h"},
+			Usage:   "list/detail",
+			Subcommands: []cli.Command{
+				{
+					Name:    "list",
+					Aliases: []string{"l"},
+					Action:  listHosts,
+					Usage:   "print exists hardware servers",
+				},
+				{
+					Name:    "detail",
+					Aliases: []string{"d"},
+					Action:  detailInfoAboutServer,
+					Usage:   "detail infomation about server",
+					Flags: []cli.Flag{
+						cli.Int64Flag{
+							Name:  "id",
+							Usage: "ID of server",
+						},
+					},
+				},
+			},
+		},
 	}
 
-	listHosts()
+	if err := app.Run(os.Args); err != nil {
+		log.Fatalln(err)
+	}
 }
 
-func listHosts() {
+func initial(c *cli.Context) error {
+	conf.read(c.GlobalString("conf"))
+	conf.check()
+	return nil
+}
+
+func listHosts(c *cli.Context) {
 	var hs hosts
 	request(hostsURL, &hs)
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "HostName", "Location", "Public IP", "Private IP"})
+	table.SetHeader([]string{"id", "host name", "location", "public ip", "private ip"})
 
 	for _, vol := range hs.Data {
-		if *sLocation {
-			vol.Location.Name = shortLocation(vol.Location.Name)
-		}
 		table.Append([]string{
 			fmt.Sprint(vol.ID),
 			vol.Title,
-			vol.Location.Name,
+			shortLocation(vol.Location.Name),
 			getIP("public", &vol.commonInfoHost),
 			getIP("private", &vol.commonInfoHost)})
 	}
-
-	// table.SetBorder(false)
 	table.Render()
 
 	var b balance
@@ -62,9 +92,10 @@ func listHosts() {
 	fmt.Printf("Total servers: %d\nBalance: %s\nEstimated balance: %s\n\n", hs.NumFound, b.Data.Balance, b.Data.EstimatedBalance)
 }
 
-func detailInfoAboutServer() {
+func detailInfoAboutServer(c *cli.Context) {
+	serverID := c.Int64("id")
 	var h host
-	request(fmt.Sprintf(hostURL, *serverID), &h)
+	request(fmt.Sprintf(hostURL, serverID), &h)
 
 	fmt.Println()
 	fmt.Printf("Price: %.2f\n", getPrice(h.Data.ID))
