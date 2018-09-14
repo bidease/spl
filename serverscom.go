@@ -11,6 +11,8 @@ type commonInfoHost struct {
 	ID                 uint64
 	Title              string
 	Conf               string
+	HasDRAC            bool   `json:"has_drac"`
+	DRACIsEnable       string `json:"temporary_drac_access"`
 	ScheduledReleaseAt string `json:"scheduled_release_at"`
 	Location           struct {
 		Name     string

@@ -109,6 +109,10 @@ func detailInfoAboutServer(c *cli.Context) {
 	if h.Data.OSReinstallation {
 		fmt.Println("OS reinstallation: yes")
 	}
+	if h.Data.HasDRAC {
+		fmt.Printf("Has DRAC: %s\n", map[bool]string{true: "yes", false: "no"}[h.Data.HasDRAC])
+		fmt.Printf("DRAC is enable: %s\n", map[string]string{"enabled": "yes", "disabled": "no"}[h.Data.DRACIsEnable])
+	}
 	fmt.Printf("CPU: %s\n", h.Data.Server.ChassisModelCPUName)
 	fmt.Printf("Configuration: %s\n", h.Data.Server.Configuration)
 	fmt.Printf("Networks:\n")
