@@ -43,6 +43,12 @@ func main() {
 					Aliases: []string{"l"},
 					Action:  listHosts,
 					Usage:   "print exists hardware servers",
+					Flags: []cli.Flag{
+						cli.BoolFlag{
+							Name:  "price",
+							Usage: "show price",
+						},
+					},
 				},
 				{
 					Name:    "info",
@@ -75,21 +81,37 @@ func listHosts(c *cli.Context) {
 	var hs hosts
 	request(hostsURL, &hs)
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"id", "host name", "location", "public ip", "private ip"})
+	lField := []string{"id", "host name", "location", "public ip", "private ip"}
 
+	if c.Bool("price") {
+		lField = append(lField, "price")
+	}
+
+	table.SetHeader(lField)
+	var price float64
 	for _, vol := range hs.Data {
-		table.Append([]string{
+		row := []string{
 			fmt.Sprint(vol.ID),
 			vol.Title,
 			shortLocation(vol.Location.Name),
 			getIP("public", &vol.commonInfoHost),
-			getIP("private", &vol.commonInfoHost)})
+			getIP("private", &vol.commonInfoHost)}
+
+		if c.Bool("price") {
+			curPrice := getPrice(vol.ID)
+			price = price + curPrice
+			row = append(row, fmt.Sprint(getPrice(vol.ID)))
+		}
+		table.Append(row)
 	}
 	table.Render()
 
 	var b balance
 	request(balanceURL, &b)
-	fmt.Printf("Total servers: %d\nBalance: %s\nEstimated balance: %s\n\n", hs.NumFound, b.Data.Balance, b.Data.EstimatedBalance)
+	fmt.Printf("Total servers: %d\n", hs.NumFound)
+	fmt.Printf("The total cost of servers: %f\n", price)
+	fmt.Printf("Balance: %s\n", b.Data.Balance)
+	fmt.Printf("Estimated balance: %s\n\n", b.Data.EstimatedBalance)
 }
 
 func detailInfoAboutServer(c *cli.Context) {
