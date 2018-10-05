@@ -45,8 +45,8 @@ func main() {
 					Usage:   "print exists hardware servers",
 				},
 				{
-					Name:    "detail",
-					Aliases: []string{"d"},
+					Name:    "info",
+					Aliases: []string{"i"},
 					Action:  detailInfoAboutServer,
 					Usage:   "detail infomation about server",
 					Flags: []cli.Flag{
