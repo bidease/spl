@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
@@ -23,7 +24,7 @@ func main() {
 	app.HideHelp = true
 	app.Author = "Konstantin Kruglov"
 	app.Email = "kruglovk@gmail.com"
-	app.Version = "1.0.0"
+	app.Version = "1.1.0"
 	app.Before = initial
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -206,20 +207,11 @@ func (c *config) check() {
 }
 
 func shortLocation(l string) string {
-	switch l {
-	case "AMS1 (Amsterdam Metropolitan Area, The Netherlands)":
-		return "EU/Amsterdam"
-	case "LUX2 (Roost, Luxembourg)":
-		return "EU/Roost"
-	case "MOW1 (Moscow, Russian Federation)":
-		return "EU/Moscow"
-	case "DFW1 (Dallas–Fort Worth, TX, USA)":
-		return "USA/Dallas"
-	case "DFW2 (Dallas–Fort Worth, TX, USA)":
-		return "USA/Dallas"
-	default:
+	if len(l) == 0 {
 		return "UNKNOWN"
 	}
+
+	return strings.Split(l, " ")[0]
 }
 
 func getIP(t string, n *commonInfoHost) string {
