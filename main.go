@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bidease/spl/cloud"
 	"github.com/bidease/spl/config"
 	"github.com/bidease/spl/tools"
 
@@ -24,7 +25,7 @@ func main() {
 	app.Before = initial
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:  "conf, c",
+			Name:  "conf",
 			Value: "~/.spl.yml",
 			Usage: "path to config file",
 		},
@@ -58,6 +59,19 @@ func main() {
 							Usage: "ID of server",
 						},
 					},
+				},
+			},
+		},
+		{
+			Name:    "cloud",
+			Aliases: []string{"c"},
+			Usage:   "info",
+			Subcommands: []cli.Command{
+				{
+					Name:    "regions",
+					Aliases: []string{"r"},
+					Action:  cloud.PrintRegions,
+					Usage:   "print available regions",
 				},
 			},
 		},
