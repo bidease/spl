@@ -7,15 +7,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 	"strings"
+
+	"github.com/bidease/spl/config"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
-	yml "gopkg.in/yaml.v2"
 )
-
-var conf config
 
 func main() {
 	log.SetFlags(log.Ldate | log.Lmicroseconds | log.Lshortfile)
@@ -73,8 +71,8 @@ func main() {
 }
 
 func initial(c *cli.Context) error {
-	conf.read(c.GlobalString("conf"))
-	conf.check()
+	config.Options.Read(c.GlobalString("conf"))
+	config.Options.Check()
 	return nil
 }
 
@@ -156,8 +154,8 @@ func request(path string, out interface{}) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-User-Email", conf.Email)
-	req.Header.Set("X-User-Token", conf.Token)
+	req.Header.Set("X-User-Email", config.Options.Email)
+	req.Header.Set("X-User-Token", config.Options.Token)
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -173,36 +171,6 @@ func request(path string, out interface{}) {
 	err = json.Unmarshal(body, &out)
 	if err != nil {
 		log.Fatalln(err)
-	}
-}
-
-type config struct {
-	Email string
-	Token string
-}
-
-func (c *config) read(f string) {
-	if !path.IsAbs(f) && f[:1] == "~" {
-		f = path.Join(os.Getenv("HOME"), f[1:])
-	}
-
-	bytes, err := ioutil.ReadFile(f)
-	if err != nil {
-		log.Fatalf("Read file %s is failed: %s", f, err)
-	}
-
-	err = yml.Unmarshal(bytes, c)
-	if err != nil {
-		log.Fatalf("Read config is failed: %s", err)
-	}
-}
-
-func (c *config) check() {
-	if c.Email == "" {
-		log.Fatalln("Email not defined")
-	}
-	if c.Token == "" {
-		log.Fatalln("Token not defined")
 	}
 }
 
