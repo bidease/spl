@@ -1,15 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 
 	"github.com/bidease/spl/config"
+	"github.com/bidease/spl/tools"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
@@ -78,7 +76,7 @@ func initial(c *cli.Context) error {
 
 func listHosts(c *cli.Context) {
 	var hs hosts
-	request(hostsURL, &hs)
+	tools.Request(hostsURL, &hs)
 	table := tablewriter.NewWriter(os.Stdout)
 	lField := []string{"id", "host name", "location", "public ip", "private ip"}
 
@@ -106,7 +104,7 @@ func listHosts(c *cli.Context) {
 	table.Render()
 
 	var b balance
-	request(balanceURL, &b)
+	tools.Request(balanceURL, &b)
 	fmt.Printf("Total servers: %d\n", hs.NumFound)
 	fmt.Printf("The total cost of servers: %f\n", price)
 	fmt.Printf("Balance: %s\n", b.Data.Balance)
@@ -116,7 +114,7 @@ func listHosts(c *cli.Context) {
 func detailInfoAboutServer(c *cli.Context) {
 	serverID := c.Int64("id")
 	var h host
-	request(fmt.Sprintf(hostURL, serverID), &h)
+	tools.Request(fmt.Sprintf(hostURL, serverID), &h)
 
 	fmt.Println()
 	fmt.Printf("Price: %.2f\n", getPrice(h.Data.ID))
@@ -146,34 +144,6 @@ func detailInfoAboutServer(c *cli.Context) {
 	}
 }
 
-func request(path string, out interface{}) {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://portal.servers.com/rest/%s", path), nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-User-Email", config.Options.Email)
-	req.Header.Set("X-User-Token", config.Options.Token)
-
-	res, err := client.Do(req)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer res.Body.Close()
-
-	err = json.Unmarshal(body, &out)
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
-
 func shortLocation(l string) string {
 	if len(l) == 0 {
 		return "UNKNOWN"
@@ -193,7 +163,7 @@ func getIP(t string, n *commonInfoHost) string {
 
 func getPrice(id uint64) (price float64) {
 	var s services
-	request(fmt.Sprintf(servicesURL, id), &s)
+	tools.Request(fmt.Sprintf(servicesURL, id), &s)
 
 	for _, v := range s.Data {
 		price = price + v.Price
