@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/bidease/spl/cloud"
+	"github.com/bidease/spl/common"
 	"github.com/bidease/spl/config"
 	"github.com/bidease/spl/tools"
 
@@ -31,6 +32,18 @@ func main() {
 		},
 	}
 	app.Commands = []cli.Command{
+		{
+			Name:    "sshkeys",
+			Aliases: []string{"s"},
+			Usage:   "porint SSH keys",
+			Action:  common.PrintSSHKeys,
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "public",
+					Usage: "show public kyes",
+				},
+			},
+		},
 		{
 			Name:    "hardware",
 			Aliases: []string{"h"},

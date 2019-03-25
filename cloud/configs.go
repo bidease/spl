@@ -59,6 +59,5 @@ func getImages(regionID uint) []image {
 			AllowedFlavors:  item.AllowedFlavors,
 		})
 	}
-	// https://portal.servers.com/rest/cloud_computing/regions/0/flavors
 	return images
 }
