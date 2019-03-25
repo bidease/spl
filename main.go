@@ -73,6 +73,18 @@ func main() {
 					Action:  cloud.PrintRegions,
 					Usage:   "print available regions",
 				},
+				{
+					Name:    "images",
+					Aliases: []string{"i"},
+					Action:  cloud.PrintImages,
+					Usage:   "print available images in region",
+					Flags: []cli.Flag{
+						cli.UintFlag{
+							Name:  "id",
+							Usage: "ID of region",
+						},
+					},
+				},
 			},
 		},
 	}

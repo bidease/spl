@@ -1,6 +1,8 @@
 package cloud
 
 import (
+	"fmt"
+
 	"github.com/bidease/spl/tools"
 )
 
@@ -23,4 +25,40 @@ func getRegions() []region {
 	}
 
 	return regions
+}
+
+type image struct {
+	CreatedAt       string `json:"created_at"`
+	ID              string
+	Name            string
+	DisplayPriority uint     `json:"display_priority"`
+	RequiresSSHKey  bool     `json:"requires_ssh_key"`
+	MinDisk         uint     `json:"min_disk"`
+	IsWindows       bool     `json:"is_windows"`
+	AllowedFlavors  []string `json:"allowed_flavors"`
+}
+
+func getImages(regionID uint) []image {
+	type rawImages struct {
+		Data     []image
+		NumFound uint
+	}
+	var rawData rawImages
+	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/images", regionID), &rawData)
+
+	var images []image
+	for _, item := range rawData.Data {
+		images = append(images, image{
+			CreatedAt:       item.CreatedAt,
+			ID:              item.ID,
+			Name:            item.Name,
+			DisplayPriority: item.DisplayPriority,
+			RequiresSSHKey:  item.RequiresSSHKey,
+			MinDisk:         item.MinDisk,
+			IsWindows:       item.IsWindows,
+			AllowedFlavors:  item.AllowedFlavors,
+		})
+	}
+	// https://portal.servers.com/rest/cloud_computing/regions/0/flavors
+	return images
 }
