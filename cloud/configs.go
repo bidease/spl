@@ -62,7 +62,7 @@ func getImages(regionID uint) []image {
 	return images
 }
 
-type cloudMachine struct {
+type cloudServer struct {
 	ID                          string
 	Name                        string
 	VCPUs                       uint
@@ -99,17 +99,17 @@ type cloudMachine struct {
 	// TODO: windows_price_per_unit
 }
 
-func getCloudMachines(regionID uint) []cloudMachine {
-	type rawCloudMachines struct {
-		Data     []cloudMachine
+func getCloudServers(regionID uint) []cloudServer {
+	type rawCloudServers struct {
+		Data     []cloudServer
 		NumFound uint
 	}
-	var rawData rawCloudMachines
+	var rawData rawCloudServers
 	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/flavors", regionID), &rawData)
 
-	var cloudMachines []cloudMachine
+	var cloudServers []cloudServer
 	for _, item := range rawData.Data {
-		cloudMachineItem := cloudMachine{
+		cloudServerItem := cloudServer{
 			ID:                          item.ID,
 			Name:                        item.Name,
 			VCPUs:                       item.VCPUs,
@@ -120,15 +120,15 @@ func getCloudMachines(regionID uint) []cloudMachine {
 			GPUs:                        item.GPUs,
 			DiscountedSnapshotSpace:     item.DiscountedSnapshotSpace,
 		}
-		cloudMachineItem.MonthlyPricesPerUnit.Currency = item.MonthlyPricesPerUnit.Currency
-		cloudMachineItem.MonthlyPricesPerUnit.Full.Hosting.Price = item.MonthlyPricesPerUnit.Full.Hosting.Price
-		cloudMachineItem.MonthlyPricesPerUnit.Full.Hosting.Tax = item.MonthlyPricesPerUnit.Full.Hosting.Tax
-		cloudMachineItem.MonthlyPricesPerUnit.Full.Hosting.Total = item.MonthlyPricesPerUnit.Full.Hosting.Total
-		cloudMachineItem.MonthlyPricesPerUnit.Original.Currency = item.MonthlyPricesPerUnit.Original.Currency
-		cloudMachineItem.MonthlyPricesPerUnit.Original.Full.Hosting.Price = item.MonthlyPricesPerUnit.Original.Full.Hosting.Price
-		cloudMachineItem.MonthlyPricesPerUnit.Original.Full.Hosting.Tax = item.MonthlyPricesPerUnit.Original.Full.Hosting.Tax
-		cloudMachineItem.MonthlyPricesPerUnit.Original.Full.Hosting.Total = item.MonthlyPricesPerUnit.Original.Full.Hosting.Total
-		cloudMachines = append(cloudMachines, cloudMachineItem)
+		cloudServerItem.MonthlyPricesPerUnit.Currency = item.MonthlyPricesPerUnit.Currency
+		cloudServerItem.MonthlyPricesPerUnit.Full.Hosting.Price = item.MonthlyPricesPerUnit.Full.Hosting.Price
+		cloudServerItem.MonthlyPricesPerUnit.Full.Hosting.Tax = item.MonthlyPricesPerUnit.Full.Hosting.Tax
+		cloudServerItem.MonthlyPricesPerUnit.Full.Hosting.Total = item.MonthlyPricesPerUnit.Full.Hosting.Total
+		cloudServerItem.MonthlyPricesPerUnit.Original.Currency = item.MonthlyPricesPerUnit.Original.Currency
+		cloudServerItem.MonthlyPricesPerUnit.Original.Full.Hosting.Price = item.MonthlyPricesPerUnit.Original.Full.Hosting.Price
+		cloudServerItem.MonthlyPricesPerUnit.Original.Full.Hosting.Tax = item.MonthlyPricesPerUnit.Original.Full.Hosting.Tax
+		cloudServerItem.MonthlyPricesPerUnit.Original.Full.Hosting.Total = item.MonthlyPricesPerUnit.Original.Full.Hosting.Total
+		cloudServers = append(cloudServers, cloudServerItem)
 	}
-	return cloudMachines
+	return cloudServers
 }

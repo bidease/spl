@@ -100,10 +100,10 @@ func main() {
 					},
 				},
 				{
-					Name:    "cloudmachines",
+					Name:    "cloudservers",
 					Aliases: []string{"c"},
-					Action:  cloud.PrintCloudMachines,
-					Usage:   "print available cloud machines in regions",
+					Action:  cloud.PrintCloudServers,
+					Usage:   "print available cloud servers in regions",
 					Flags: []cli.Flag{
 						cli.UintFlag{
 							Name:  "id",

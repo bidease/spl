@@ -27,7 +27,7 @@ func PrintImages(c *cli.Context) {
 	table := tablewriter.NewWriter(os.Stdout)
 	lField := []string{
 		"name", "id", "created at", "display priority", "requires ssh key",
-		"min disk", "is windows", "allowed flavors",
+		"min disk", "is windows", "allowed servers",
 	}
 	table.SetHeader(lField)
 
@@ -47,15 +47,15 @@ func PrintImages(c *cli.Context) {
 	table.Render()
 }
 
-// PrintCloudMachines ..
-func PrintCloudMachines(c *cli.Context) {
+// PrintCloudServers ..
+func PrintCloudServers(c *cli.Context) {
 	table := tablewriter.NewWriter(os.Stdout)
 	lField := []string{
 		"id", "name", "vcpus", "ram", "disk", "free traffic (over)", "price",
 	}
 	table.SetHeader(lField)
 
-	for _, item := range getCloudMachines(c.Uint("id")) {
+	for _, item := range getCloudServers(c.Uint("id")) {
 		row := []string{
 			item.ID,
 			item.Name,
