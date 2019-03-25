@@ -90,7 +90,7 @@ func main() {
 					Name:    "images",
 					Aliases: []string{"i"},
 					Action:  cloud.PrintImages,
-					Usage:   "print available images in region",
+					Usage:   "print available images in region for orders",
 					Flags: []cli.Flag{
 						cli.UintFlag{
 							Name:  "id",
@@ -103,7 +103,7 @@ func main() {
 					Name:    "servers",
 					Aliases: []string{"s"},
 					Action:  cloud.PrintCloudServers,
-					Usage:   "print available cloud servers in regions for orders",
+					Usage:   "print available cloud servers in region for orders",
 					Flags: []cli.Flag{
 						cli.UintFlag{
 							Name:  "id",
