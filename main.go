@@ -95,6 +95,20 @@ func main() {
 						cli.UintFlag{
 							Name:  "id",
 							Usage: "ID of region",
+							Value: 0,
+						},
+					},
+				},
+				{
+					Name:    "cloudmachines",
+					Aliases: []string{"c"},
+					Action:  cloud.PrintCloudMachines,
+					Usage:   "print available cloud machines in regions",
+					Flags: []cli.Flag{
+						cli.UintFlag{
+							Name:  "id",
+							Usage: "ID of region",
+							Value: 0,
 						},
 					},
 				},

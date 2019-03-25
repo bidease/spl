@@ -46,3 +46,26 @@ func PrintImages(c *cli.Context) {
 	}
 	table.Render()
 }
+
+// PrintCloudMachines ..
+func PrintCloudMachines(c *cli.Context) {
+	table := tablewriter.NewWriter(os.Stdout)
+	lField := []string{
+		"id", "name", "vcpus", "ram", "disk", "free traffic (over)", "price",
+	}
+	table.SetHeader(lField)
+
+	for _, item := range getCloudMachines(c.Uint("id")) {
+		row := []string{
+			item.ID,
+			item.Name,
+			fmt.Sprintf("%d", item.VCPUs),
+			fmt.Sprintf("%d MB", item.RAM),
+			fmt.Sprintf("%d GB SSD", item.Disk),
+			fmt.Sprintf("%d GB (%.2f/GB)", item.FreeTrafficAmountGb, item.OvercommitTrafficPricePerGb),
+			fmt.Sprintf("%.2f %s", item.MonthlyPricesPerUnit.Full.Hosting.Total, item.MonthlyPricesPerUnit.Currency),
+		}
+		table.Append(row)
+	}
+	table.Render()
+}
