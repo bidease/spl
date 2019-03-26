@@ -112,6 +112,43 @@ func main() {
 						},
 					},
 				},
+				{
+					Name:    "create",
+					Aliases: []string{"c"},
+					Action:  cloud.CreateCloudServer,
+					Usage:   "create cloud server",
+					Flags: []cli.Flag{
+						cli.UintFlag{
+							Name:  "regionID",
+							Usage: "ID of region",
+						},
+						cli.StringFlag{
+							Name:  "imageID",
+							Usage: "ID of image",
+						},
+						cli.StringFlag{
+							Name:  "configID",
+							Usage: "ID of config (VCPUs, RAM, etc)",
+						},
+						cli.StringFlag{
+							Name:  "name",
+							Usage: "host name",
+						},
+						cli.StringFlag{
+							Name:  "fingerprint",
+							Usage: "use an user name",
+						},
+						cli.UintFlag{
+							Name:  "backups",
+							Usage: "number last backups",
+							Value: 5,
+						},
+						cli.BoolFlag{
+							Name:  "gp",
+							Usage: "global private network",
+						},
+					},
+				},
 			},
 		},
 	}
@@ -129,7 +166,7 @@ func initial(c *cli.Context) error {
 
 func listHosts(c *cli.Context) {
 	var hs hosts
-	tools.Request(hostsURL, &hs)
+	tools.Request(hostsURL, &hs, nil)
 	table := tablewriter.NewWriter(os.Stdout)
 	lField := []string{"id", "host name", "location", "public ip", "private ip"}
 
@@ -157,7 +194,7 @@ func listHosts(c *cli.Context) {
 	table.Render()
 
 	var b balance
-	tools.Request(balanceURL, &b)
+	tools.Request(balanceURL, &b, nil)
 	fmt.Printf("Total servers: %d\n", hs.NumFound)
 	fmt.Printf("The total cost of servers: %f\n", price)
 	fmt.Printf("Balance: %s\n", b.Data.Balance)
@@ -167,7 +204,7 @@ func listHosts(c *cli.Context) {
 func detailInfoAboutServer(c *cli.Context) {
 	serverID := c.Int64("id")
 	var h host
-	tools.Request(fmt.Sprintf(hostURL, serverID), &h)
+	tools.Request(fmt.Sprintf(hostURL, serverID), &h, nil)
 
 	fmt.Println()
 	fmt.Printf("Price: %.2f\n", getPrice(h.Data.ID))
@@ -216,7 +253,7 @@ func getIP(t string, n *commonInfoHost) string {
 
 func getPrice(id uint64) (price float64) {
 	var s services
-	tools.Request(fmt.Sprintf(servicesURL, id), &s)
+	tools.Request(fmt.Sprintf(servicesURL, id), &s, nil)
 
 	for _, v := range s.Data {
 		price = price + v.Price

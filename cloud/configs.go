@@ -17,7 +17,7 @@ func getRegions() []region {
 		NumFound uint
 	}
 	var rawData rawRegions
-	tools.Request("cloud_computing/regions", &rawData)
+	tools.Request("cloud_computing/regions", &rawData, nil)
 
 	var regions []region
 	for _, item := range rawData.Data {
@@ -44,7 +44,7 @@ func getImages(regionID uint) []image {
 		NumFound uint
 	}
 	var rawData rawImages
-	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/images", regionID), &rawData)
+	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/images", regionID), &rawData, nil)
 
 	var images []image
 	for _, item := range rawData.Data {
@@ -105,7 +105,7 @@ func getCloudServers(regionID uint) []cloudServer {
 		NumFound uint
 	}
 	var rawData rawCloudServers
-	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/flavors", regionID), &rawData)
+	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/flavors", regionID), &rawData, nil)
 
 	var cloudServers []cloudServer
 	for _, item := range rawData.Data {
