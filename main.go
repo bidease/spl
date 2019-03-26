@@ -159,6 +159,22 @@ func main() {
 					Action:  cloud.PrintExistsCloudServers,
 					Usage:   "print exists cloud servers",
 				},
+				{
+					Name:    "delete",
+					Aliases: []string{"d"},
+					Action:  cloud.DeleteInstanse,
+					Usage:   "delete exists cloud server",
+					Flags: []cli.Flag{
+						cli.StringFlag{
+							Name:  "id",
+							Usage: "ID of deleting cloud server",
+						},
+						cli.StringFlag{
+							Name:  "token",
+							Usage: "one-time token",
+						},
+					},
+				},
 			},
 		},
 	}
@@ -176,7 +192,7 @@ func initial(c *cli.Context) error {
 
 func listHosts(c *cli.Context) {
 	var hs hosts
-	tools.Request(hostsURL, &hs, nil)
+	tools.GetRequest(hostsURL, &hs)
 	table := tablewriter.NewWriter(os.Stdout)
 	lField := []string{"id", "host name", "location", "public ip", "private ip"}
 
@@ -204,7 +220,7 @@ func listHosts(c *cli.Context) {
 	table.Render()
 
 	var b balance
-	tools.Request(balanceURL, &b, nil)
+	tools.GetRequest(balanceURL, &b)
 	fmt.Printf("Total servers: %d\n", hs.NumFound)
 	fmt.Printf("The total cost of servers: %f\n", price)
 	fmt.Printf("Balance: %s\n", b.Data.Balance)
@@ -214,7 +230,7 @@ func listHosts(c *cli.Context) {
 func detailInfoAboutServer(c *cli.Context) {
 	serverID := c.Int64("id")
 	var h host
-	tools.Request(fmt.Sprintf(hostURL, serverID), &h, nil)
+	tools.GetRequest(fmt.Sprintf(hostURL, serverID), &h)
 
 	fmt.Println()
 	fmt.Printf("Price: %.2f\n", getPrice(h.Data.ID))
@@ -263,7 +279,7 @@ func getIP(t string, n *commonInfoHost) string {
 
 func getPrice(id uint64) (price float64) {
 	var s services
-	tools.Request(fmt.Sprintf(servicesURL, id), &s, nil)
+	tools.GetRequest(fmt.Sprintf(servicesURL, id), &s)
 
 	for _, v := range s.Data {
 		price = price + v.Price

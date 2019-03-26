@@ -20,7 +20,7 @@ func GetSSHKeys() []SSHKey {
 		NumFound uint
 	}
 	var rawData rawSSHKeys
-	tools.Request(fmt.Sprintf("ssh_keys"), &rawData, nil)
+	tools.GetRequest(fmt.Sprintf("ssh_keys"), &rawData)
 
 	var SSHKeys []SSHKey
 	for _, item := range rawData.Data {

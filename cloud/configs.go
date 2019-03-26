@@ -21,7 +21,7 @@ func getRegions() []region {
 		NumFound uint
 	}
 	var rawData rawRegions
-	tools.Request("cloud_computing/regions", &rawData, nil)
+	tools.GetRequest("cloud_computing/regions", &rawData)
 
 	var regions []region
 	for _, item := range rawData.Data {
@@ -48,7 +48,7 @@ func getImages(regionID uint) []image {
 		NumFound uint
 	}
 	var rawData rawImages
-	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/images", regionID), &rawData, nil)
+	tools.GetRequest(fmt.Sprintf("cloud_computing/regions/%d/images", regionID), &rawData)
 
 	var images []image
 	for _, item := range rawData.Data {
@@ -109,7 +109,7 @@ func getCloudServers(regionID uint) []cloudServer {
 		NumFound uint
 	}
 	var rawData rawCloudServers
-	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/flavors", regionID), &rawData, nil)
+	tools.GetRequest(fmt.Sprintf("cloud_computing/regions/%d/flavors", regionID), &rawData)
 
 	var cloudServers []cloudServer
 	for _, item := range rawData.Data {
@@ -175,7 +175,7 @@ func CreateCloudServer(c *cli.Context) {
 	}
 
 	var response common.Response
-	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/instances", c.Uint("regionID")), &response, newCloudServer)
+	tools.PostRequest(fmt.Sprintf("cloud_computing/regions/%d/instances", c.Uint("regionID")), &response, newCloudServer)
 
 	if !response.Success {
 		log.Fatalf("%v\n", response.Success)
@@ -188,7 +188,8 @@ type RegionInstance struct {
 	Name       string
 	Status     string
 	FlavorName string `json:"flavor_name"`
-	Region     string
+	RegionID   string
+	RegionName string
 	LocalIP    string `json:"local_ip"`
 	InternalIP string `json:"internal_ip"`
 	ExternalIP string `json:"external_ip"`
@@ -199,7 +200,7 @@ func getExistsCloudServersRegion(regionIns region) []RegionInstance {
 		Data    []RegionInstance
 		NumFoud uint `json:"num_found"`
 	}
-	tools.Request(fmt.Sprintf("cloud_computing/regions/%s/instances", regionIns.ID), &response, nil)
+	tools.GetRequest(fmt.Sprintf("cloud_computing/regions/%s/instances", regionIns.ID), &response)
 
 	var regionInstances []RegionInstance
 	for _, item := range response.Data {
@@ -208,7 +209,8 @@ func getExistsCloudServersRegion(regionIns region) []RegionInstance {
 			Name:       item.Name,
 			Status:     item.Status,
 			FlavorName: item.FlavorName,
-			Region:     regionIns.Name,
+			RegionID:   regionIns.ID,
+			RegionName: regionIns.Name,
 			LocalIP:    item.LocalIP,
 			InternalIP: item.InternalIP,
 			ExternalIP: item.ExternalIP,

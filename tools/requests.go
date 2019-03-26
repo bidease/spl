@@ -11,8 +11,7 @@ import (
 	"github.com/bidease/spl/config"
 )
 
-// Request ..
-func Request(path string, out interface{}, data interface{}) {
+func request(method string, path string, out interface{}, data interface{}) *http.Response {
 	var req *http.Request
 	var err error
 
@@ -22,13 +21,15 @@ func Request(path string, out interface{}, data interface{}) {
 		if err != nil {
 			log.Fatalln(err)
 		}
+		fmt.Println(fmt.Sprintf("https://portal.servers.com/rest/%s", path))
+		fmt.Println(string(bytesData))
 
-		req, err = http.NewRequest("POST", fmt.Sprintf("https://portal.servers.com/rest/%s", path), bytes.NewBuffer(bytesData))
+		req, err = http.NewRequest(method, fmt.Sprintf("https://portal.servers.com/rest/%s", path), bytes.NewBuffer(bytesData))
 		if err != nil {
 			log.Fatalln(err)
 		}
 	} else {
-		req, err = http.NewRequest("GET", fmt.Sprintf("https://portal.servers.com/rest/%s", path), nil)
+		req, err = http.NewRequest(method, fmt.Sprintf("https://portal.servers.com/rest/%s", path), nil)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -53,4 +54,21 @@ func Request(path string, out interface{}, data interface{}) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	return res
+}
+
+// DeleteRequest ..
+func DeleteRequest(path string, out interface{}, data interface{}) {
+	request(http.MethodDelete, path, &out, data)
+}
+
+// PostRequest ..
+func PostRequest(path string, out interface{}, data interface{}) {
+	request(http.MethodPost, path, &out, data)
+}
+
+// GetRequest ..
+func GetRequest(path string, out interface{}) {
+	request(http.MethodGet, path, &out, nil)
 }
