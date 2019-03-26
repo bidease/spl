@@ -22,7 +22,7 @@ func main() {
 	app.HideHelp = true
 	app.Author = "Konstantin Kruglov"
 	app.Email = "kruglovk@gmail.com"
-	app.Version = "1.1.0"
+	app.Version = "1.2.0"
 	app.Before = initial
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
