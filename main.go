@@ -153,6 +153,12 @@ func main() {
 						},
 					},
 				},
+				{
+					Name:    "list",
+					Aliases: []string{"l"},
+					Action:  cloud.PrintExistsCloudServers,
+					Usage:   "print exists cloud servers",
+				},
 			},
 		},
 	}

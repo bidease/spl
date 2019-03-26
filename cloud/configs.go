@@ -181,3 +181,49 @@ func CreateCloudServer(c *cli.Context) {
 		log.Fatalf("%v\n", response.Success)
 	}
 }
+
+// RegionInstance ..
+type RegionInstance struct {
+	ID         string
+	Name       string
+	Status     string
+	FlavorName string `json:"flavor_name"`
+	Region     string
+	LocalIP    string `json:"local_ip"`
+	InternalIP string `json:"internal_ip"`
+	ExternalIP string `json:"external_ip"`
+}
+
+func getExistsCloudServersRegion(regionIns region) []RegionInstance {
+	var response struct {
+		Data    []RegionInstance
+		NumFoud uint `json:"num_found"`
+	}
+	tools.Request(fmt.Sprintf("cloud_computing/regions/%s/instances", regionIns.ID), &response, nil)
+
+	var regionInstances []RegionInstance
+	for _, item := range response.Data {
+		regionInstances = append(regionInstances, RegionInstance{
+			ID:         item.ID,
+			Name:       item.Name,
+			Status:     item.Status,
+			FlavorName: item.FlavorName,
+			Region:     regionIns.Name,
+			LocalIP:    item.LocalIP,
+			InternalIP: item.InternalIP,
+			ExternalIP: item.ExternalIP,
+		})
+	}
+
+	return regionInstances
+}
+
+func getExistsCloudServers() []RegionInstance {
+	var existsInstances []RegionInstance
+	for _, region := range getRegions() {
+		for _, instanse := range getExistsCloudServersRegion(region) {
+			existsInstances = append(existsInstances, instanse)
+		}
+	}
+	return existsInstances
+}
