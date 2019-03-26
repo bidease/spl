@@ -103,7 +103,7 @@ func main() {
 					Name:    "servers",
 					Aliases: []string{"s"},
 					Action:  cloud.PrintCloudServers,
-					Usage:   "print available cloud servers in region for orders",
+					Usage:   "print available configs cloud servers in region for orders",
 					Flags: []cli.Flag{
 						cli.UintFlag{
 							Name:  "id",
