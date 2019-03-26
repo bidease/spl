@@ -32,3 +32,8 @@ func GetSSHKeys() []SSHKey {
 	}
 	return SSHKeys
 }
+
+// Response ..
+type Response struct {
+	Success bool
+}

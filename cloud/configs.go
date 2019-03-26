@@ -2,8 +2,12 @@ package cloud
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/bidease/spl/common"
 	"github.com/bidease/spl/tools"
+
+	"github.com/urfave/cli"
 )
 
 type region struct {
@@ -131,4 +135,49 @@ func getCloudServers(regionID uint) []cloudServer {
 		cloudServers = append(cloudServers, cloudServerItem)
 	}
 	return cloudServers
+}
+
+type createCloudServer struct {
+	ImageID        string `json:"image_id"`
+	FlavorID       string `json:"flavor_id"` // configID
+	Period         string `json:"period"`    // monthly
+	SetupPassword  bool   `json:"setup_password"`
+	KeyFingerprint string `json:"key_fingerprint"`
+	Name           string `json:"name"`
+	GPEnabled      bool   `json:"gp_enabled"`
+	BackupEnabled  bool   `json:"backup_enabled"`
+	BackupCopies   uint   `json:"backup_copies"`
+}
+
+// CreateCloudServer ..
+func CreateCloudServer(c *cli.Context) {
+	if len(c.String("fingerprint")) > 0 && c.Bool("password") {
+		log.Fatalln("use -fingerprint or -password")
+	}
+
+	newCloudServer := createCloudServer{
+		ImageID:   c.String("imageID"),
+		FlavorID:  c.String("configID"),
+		Period:    "monthly",
+		Name:      c.String("name"),
+		GPEnabled: c.Bool("gpn"),
+	}
+
+	if c.Uint("backups") > 0 {
+		newCloudServer.BackupEnabled = true
+		newCloudServer.BackupCopies = c.Uint("backups")
+	}
+
+	if c.Bool("password") {
+		newCloudServer.SetupPassword = true
+	} else {
+		newCloudServer.KeyFingerprint = common.GetUserFingerprint(c.String("fingerprint"))
+	}
+
+	var response common.Response
+	tools.Request(fmt.Sprintf("cloud_computing/regions/%d/instances", c.Uint("regionID")), &response, newCloudServer)
+
+	if !response.Success {
+		log.Fatalf("%v\n", response.Success)
+	}
 }

@@ -1,6 +1,7 @@
 package common
 
 import (
+	"log"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -31,4 +32,15 @@ func PrintSSHKeys(c *cli.Context) {
 		table.Append(row)
 	}
 	table.Render()
+}
+
+// GetUserFingerprint ..
+func GetUserFingerprint(username string) string {
+	for _, item := range GetSSHKeys() {
+		if item.Name == username {
+			return item.Fingerprint
+		}
+	}
+	log.Fatalf("unknown user %s\n", username)
+	return ""
 }

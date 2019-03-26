@@ -138,13 +138,17 @@ func main() {
 							Name:  "fingerprint",
 							Usage: "use an user name",
 						},
+						cli.BoolFlag{
+							Name:  "password",
+							Usage: "use password",
+						},
 						cli.UintFlag{
 							Name:  "backups",
 							Usage: "number last backups",
 							Value: 5,
 						},
 						cli.BoolFlag{
-							Name:  "gp",
+							Name:  "gpn",
 							Usage: "global private network",
 						},
 					},
