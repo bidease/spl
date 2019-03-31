@@ -21,8 +21,6 @@ func request(method string, path string, out interface{}, data interface{}) *htt
 		if err != nil {
 			log.Fatalln(err)
 		}
-		fmt.Println(fmt.Sprintf("https://portal.servers.com/rest/%s", path))
-		fmt.Println(string(bytesData))
 
 		req, err = http.NewRequest(method, fmt.Sprintf("https://portal.servers.com/rest/%s", path), bytes.NewBuffer(bytesData))
 		if err != nil {
