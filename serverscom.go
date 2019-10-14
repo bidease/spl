@@ -63,6 +63,9 @@ type balance struct {
 
 type services struct {
 	Data []struct {
+		Type             uint64
+		DateStart        string `json:"date_start"`
+		Description      string
 		Currency         string
 		OriginalCurrency string  `json:"original_currency"`
 		OriginalPrice    float64 `json:"original_price"`

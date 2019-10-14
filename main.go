@@ -243,12 +243,13 @@ func listHosts(c *cli.Context) {
 }
 
 func detailInfoAboutServer(c *cli.Context) {
-	serverID := c.Int64("id")
+	serverID := c.Uint64("id")
 	var h host
 	tools.GetRequest(fmt.Sprintf(hostURL, serverID), &h)
+	s := getServices(serverID)
 
-	fmt.Println()
 	fmt.Printf("Price: %.2f\n", getPrice(h.Data.ID))
+	fmt.Println("Start rent:", getStartRentHost(&s))
 	if h.Data.ScheduledReleaseAt != "" {
 		fmt.Printf("Scheduled release at: %s\n", h.Data.ScheduledReleaseAt)
 	}
@@ -271,7 +272,13 @@ func detailInfoAboutServer(c *cli.Context) {
 		fmt.Printf("  IP: %s\n", v.HostIP)
 		fmt.Printf("  Netmask: %s\n", v.Netmask)
 		fmt.Printf("  Type: %s\n", v.PoolType)
-		fmt.Println()
+	}
+
+	fmt.Println("Uplinks:")
+	for _, v := range s.Data {
+		if v.Type == 11 {
+			fmt.Printf("  %s (%.2f %s)\n", v.Description, v.Price, v.Currency)
+		}
 	}
 }
 
@@ -293,11 +300,22 @@ func getIP(t string, n *commonInfoHost) string {
 }
 
 func getPrice(id uint64) (price float64) {
-	var s services
-	tools.GetRequest(fmt.Sprintf(servicesURL, id), &s)
-
-	for _, v := range s.Data {
+	for _, v := range getServices(id).Data {
 		price = price + v.Price
 	}
 	return
+}
+
+func getServices(id uint64) (s services) {
+	tools.GetRequest(fmt.Sprintf(servicesURL, id), &s)
+	return
+}
+
+func getStartRentHost(s *services) string {
+	for _, service := range s.Data {
+		if service.Type == 1 {
+			return service.DateStart
+		}
+	}
+	return "UNKNOWN"
 }
