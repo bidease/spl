@@ -59,6 +59,10 @@ func main() {
 							Name:  "price",
 							Usage: "show price",
 						},
+						cli.BoolFlag{
+							Name:  "cpu",
+							Usage: "show CPU name",
+						},
 					},
 				},
 				{
@@ -196,6 +200,10 @@ func listHosts(c *cli.Context) {
 	table := tablewriter.NewWriter(os.Stdout)
 	lField := []string{"id", "host name", "location", "public ip", "private ip"}
 
+	if c.Bool("cpu") {
+		lField = append(lField, "cpu")
+	}
+
 	if c.Bool("price") {
 		lField = append(lField, "price")
 	}
@@ -208,7 +216,14 @@ func listHosts(c *cli.Context) {
 			vol.Title,
 			shortLocation(vol.Location.Name),
 			getIP("public", &vol.commonInfoHost),
-			getIP("private", &vol.commonInfoHost)}
+			getIP("private", &vol.commonInfoHost),
+		}
+
+		if c.Bool("cpu") {
+			var h host
+			tools.GetRequest(fmt.Sprintf(hostURL, vol.ID), &h)
+			row = append(row, h.Data.Server.ChassisModelCPUName)
+		}
 
 		if c.Bool("price") {
 			curPrice := getPrice(vol.ID)
