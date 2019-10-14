@@ -228,7 +228,7 @@ func listHosts(c *cli.Context) {
 		if c.Bool("price") {
 			curPrice := getPrice(vol.ID)
 			price = price + curPrice
-			row = append(row, fmt.Sprint(getPrice(vol.ID)))
+			row = append(row, fmt.Sprintf("%.2f", getPrice(vol.ID)))
 		}
 		table.Append(row)
 	}
