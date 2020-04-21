@@ -1,4 +1,4 @@
-package config
+package spl
 
 import (
 	"io/ioutil"
@@ -9,15 +9,18 @@ import (
 	yml "gopkg.in/yaml.v2"
 )
 
-type config struct {
-	Email string
-	Token string
+// Config ..
+type Config struct {
+	Email    string
+	Token    string
+	BaseURL  string
+	JWTtoken string
 }
 
-// Options ..
-var Options config
+// Conf ..
+var Conf Config
 
-func (c *config) Read(f string) {
+func (c *Config) Read(f string) {
 	if !path.IsAbs(f) && f[:1] == "~" {
 		f = path.Join(os.Getenv("HOME"), f[1:])
 	}
@@ -30,14 +33,5 @@ func (c *config) Read(f string) {
 	err = yml.Unmarshal(bytes, c)
 	if err != nil {
 		log.Fatalf("Read config is failed: %s", err)
-	}
-}
-
-func (c *config) Check() {
-	if c.Email == "" {
-		log.Fatalln("Email not defined")
-	}
-	if c.Token == "" {
-		log.Fatalln("Token not defined")
 	}
 }
