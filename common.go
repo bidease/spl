@@ -25,12 +25,12 @@ func request(method string, path string, out interface{}, data interface{}) (*ht
 			return nil, err
 		}
 
-		req, err = http.NewRequest(method, "https://api.servers.com/v1/"+path, bytes.NewBuffer(bytesData))
+		req, err = http.NewRequest(method, Conf.BaseURL+path, bytes.NewBuffer(bytesData))
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		req, err = http.NewRequest(method, "https://api.servers.com/v1/"+path, nil)
+		req, err = http.NewRequest(method, Conf.BaseURL+path, nil)
 		if err != nil {
 			return nil, err
 		}

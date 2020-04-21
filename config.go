@@ -11,8 +11,6 @@ import (
 
 // Config ..
 type Config struct {
-	Email    string
-	Token    string
 	BaseURL  string
 	JWTtoken string
 }
@@ -33,5 +31,9 @@ func (c *Config) Read(f string) {
 	err = yml.Unmarshal(bytes, c)
 	if err != nil {
 		log.Fatalf("Read config is failed: %s", err)
+	}
+
+	if c.BaseURL == "" {
+		c.BaseURL = "https://api.servers.com/v1/"
 	}
 }
