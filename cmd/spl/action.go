@@ -9,10 +9,9 @@ import (
 	"github.com/bidease/spl/cloud"
 	"github.com/bidease/spl/dedicated"
 	"github.com/olekukonko/tablewriter"
-	"github.com/urfave/cli"
 )
 
-func printSSHKeys(c *cli.Context) {
+func printSSHKeys() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"name", "created at", "updated at", "fingerprint"})
 
@@ -33,7 +32,7 @@ func printSSHKeys(c *cli.Context) {
 	table.Render()
 }
 
-func printLocations(c *cli.Context) {
+func printLocations() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"id", "name", "l2 segments", "private racks", "load balancers"})
 
@@ -55,7 +54,7 @@ func printLocations(c *cli.Context) {
 	table.Render()
 }
 
-func printDedicatedServes(c *cli.Context) {
+func printDedicatedServers() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"id", "title", "location id", "status", "private ipv4 address", "public ipv4 address"})
 
@@ -78,7 +77,7 @@ func printDedicatedServes(c *cli.Context) {
 	table.Render()
 }
 
-func printCloudInstances(c *cli.Context) {
+func printCloudInstances() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"id", "name", "status", "flavor id", "private ipv4 address", "public ipv4 address"})
 
@@ -101,8 +100,8 @@ func printCloudInstances(c *cli.Context) {
 	table.Render()
 }
 
-func getDedicatedServersDescribe(c *cli.Context) {
-	server, err := dedicated.GetServer(c.String("id"))
+func getDedicatedServersDescribe() {
+	server, err := dedicated.GetServer(conf.Hostid)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -123,8 +122,8 @@ func getDedicatedServersDescribe(c *cli.Context) {
 	fmt.Println()
 }
 
-func getCloudInstanceDescribe(c *cli.Context) {
-	instance, err := cloud.GetInstance(c.String("id"))
+func getCloudInstanceDescribe() {
+	instance, err := cloud.GetInstance(conf.Hostid)
 	if err != nil {
 		log.Fatalln(err)
 	}
