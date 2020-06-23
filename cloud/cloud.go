@@ -12,11 +12,17 @@ type Instance struct {
 	OpenstackUUID      string `json:"openstack_uuid"`
 	Status             string
 	Name               string
+	RegionID           uint   `json:"region_id"`
+	RegionCode         string `json:"region_code"`
 	FlavorID           string `json:"flavor_id"`
+	FlavorName         string `json:"flavor_name"`
 	ImageID            string `json:"image_id"`
+	ImageName          string `json:"image_name"`
 	PublicIPv4Address  string `json:"public_ipv4_address"`
 	PublicIPv6Address  string `json:"public_ipv6_address"`
 	PrivateIPv4Address string `json:"private_ipv4_address"`
+	IPv6Enabled        bool   `json:"ipv6_enabled"`
+	GPNEnabled         bool   `json:"gpn_enabled"`
 	CreatedAt          string `json:"created_at"`
 	UpdatedAt          string `json:"updated_at"`
 }
