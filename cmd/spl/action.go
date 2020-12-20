@@ -106,6 +106,19 @@ func getDedicatedServersDescribe() {
 		log.Fatalln(err)
 	}
 
+	services, err := dedicated.GetServices(server.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var totalPrice float64
+	var currency string
+
+	for _, item := range *services {
+		totalPrice += item.Total
+		currency = item.Currency
+	}
+
 	fmt.Println()
 	fmt.Println("ID:                       ", server.ID)
 	fmt.Println("Title:                    ", server.Title)
@@ -135,6 +148,7 @@ func getDedicatedServersDescribe() {
 	fmt.Println("  Operating system name:  ", server.ConfigurationDetails.OperatingSystemFullName)
 	fmt.Println("Private IPv4 address:     ", server.PrivateIPv4Address)
 	fmt.Println("Public IPv4 address:      ", server.PublicIPv4Address)
+	fmt.Printf("Total price:               %.2f %s\n", totalPrice, currency)
 	fmt.Println()
 }
 
