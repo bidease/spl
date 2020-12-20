@@ -1,6 +1,6 @@
-# Servers.com portal
+# Servers.com API
 
-Support features of https://portal.servers.com:
+Partial support features of https://developers.servers.com/api-documentation/v1/:
 
 - servers list
 - detail information about the server
@@ -10,16 +10,6 @@ Support features of https://portal.servers.com:
 Default path to config is `~/.spl.yml`.
 
 ```yaml
-email: <email>
-token: <token>
-```
-
-## Docs
-
-```
-$ curl 'https://portal.servers.com/rest/hosts' -H 'Content-Type: application/json' -H 'X-User-Email: EMAIL' -H 'X-User-Token: TOKEN' | jq
-...
-
-$ curl 'https://portal.servers.com/rest/hosts/26554' -H 'Content-Type: application/json' -H 'X-User-Email: EMAIL' -H 'X-User-Token: TOKEN' | jq
-...
+baseurl: <email>    # optional
+jwttoken: <token>
 ```
