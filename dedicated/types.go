@@ -10,11 +10,11 @@ type Server struct {
 	OperationalStatus    string `json:"operational_status"`
 	PowerStatus          string `json:"power_status"`
 	Configuration        string
-	ConfigurationDetails ServerConfigurationDetails
-	PrivateIPv4Address   string `json:"private_ipv4_address"`
-	PublicIPv4Address    string `json:"public_ipv4_address"`
-	LeaseStartAt         string `json:"lease_start_at"`
-	ScheduledReleaseAt   string `json:"scheduled_release_at"`
+	ConfigurationDetails ServerConfigurationDetails `json:"configuration_details"`
+	PrivateIPv4Address   string                     `json:"private_ipv4_address"`
+	PublicIPv4Address    string                     `json:"public_ipv4_address"`
+	LeaseStartAt         string                     `json:"lease_start_at"`
+	ScheduledReleaseAt   string                     `json:"scheduled_release_at"`
 	Type                 string
 	RackID               string `json:"rack_id"`
 	CreatedAt            string `json:"created_at"`
@@ -32,7 +32,7 @@ type ServerConfigurationDetails struct {
 	PrivateUplinkName       string `json:"private_uplink_name"`
 	PublicUplinkID          uint   `json:"public_uplink_id"`
 	PublicUplinkName        string `json:"public_uplink_name"`
-	OperatingSystemID       string `json:"operating_system_id"`
+	OperatingSystemID       uint   `json:"operating_system_id"`
 	OperatingSystemFullName string `json:"operating_system_full_name"`
 }
 
