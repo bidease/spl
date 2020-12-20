@@ -10,6 +10,6 @@ Partial support features of https://developers.servers.com/api-documentation/v1/
 Default path to config is `~/.spl.yml`.
 
 ```yaml
-baseurl: <email>    # optional
+baseurl: <url>      # optional
 jwttoken: <token>
 ```
