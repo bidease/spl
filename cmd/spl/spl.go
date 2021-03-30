@@ -1,16 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/bidease/spl"
 )
 
 func main() {
-	if (conf.Dedicated || conf.D) && conf.Hostid != "" {
-		fmt.Println(conf.Hostid)
-	}
 	switch {
 	case conf.Sshkeys || conf.S:
 		printSSHKeys()
