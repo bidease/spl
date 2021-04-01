@@ -18,6 +18,8 @@ func main() {
 		getDedicatedServersDescribe()
 	case (conf.Cloud || conf.C) && conf.Hostid == "":
 		printCloudInstances()
+	case (conf.Cloud || conf.C) && conf.Hostid != "" && conf.Delete:
+		deleteCloudInstance()
 	case (conf.Cloud || conf.C) && conf.Hostid != "":
 		getCloudInstanceDescribe()
 	}

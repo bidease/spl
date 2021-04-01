@@ -9,6 +9,7 @@ import (
 type config struct {
 	Conf         string
 	Hostid       string
+	Delete       bool
 	S, Sshkeys   bool
 	L, Locations bool
 	C, Cloud     bool
@@ -19,7 +20,7 @@ var conf config
 var usage = `
 Usage:
 	spl --help
-	spl (c | cloud) [<hostid>] [--conf FILE]
+	spl (c | cloud) [<hostid>] [--delete] [--conf FILE]
 	spl (d | dedicated) [<hostid>] [--conf FILE]
 	spl (s | sshkeys) [--conf FILE]
 	spl (l | locations) [--conf FILE]

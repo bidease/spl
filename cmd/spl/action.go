@@ -173,8 +173,39 @@ func getCloudInstanceDescribe() {
 	fmt.Println("Image Name:           ", instance.ImageName)
 	fmt.Println("Private IPv4 address: ", instance.PrivateIPv4Address)
 	fmt.Println("Public IPv4 address:  ", instance.PublicIPv4Address)
+	fmt.Println("Local IPv4 address:   ", instance.LocalIPv4Address)
 	fmt.Println("Public IPv6 address:  ", instance.PublicIPv6Address)
 	fmt.Println("IPv6 enabled:         ", instance.IPv6Enabled)
 	fmt.Println("GPN enabled:          ", instance.GPNEnabled)
+	fmt.Println("Backup copies:        ", instance.BackupCopies)
+	fmt.Println()
+}
+
+func deleteCloudInstance() {
+	instance, err := cloud.DeleteInstance(conf.Hostid)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	fmt.Println()
+	fmt.Println("ID:                   ", instance.ID)
+	fmt.Println("Name:                 ", instance.Name)
+	fmt.Println("Openstack UUID:       ", instance.OpenstackUUID)
+	fmt.Println("Created at:           ", instance.CreatedAt)
+	fmt.Println("Updated at:           ", instance.UpdatedAt)
+	fmt.Println("Region ID:            ", instance.RegionID)
+	fmt.Println("Region code:          ", instance.RegionCode)
+	fmt.Println("Status:               ", instance.Status)
+	fmt.Println("Flavor ID             ", instance.FlavorID)
+	fmt.Println("Flavor name           ", instance.FlavorName)
+	fmt.Println("Image ID:             ", instance.ImageID)
+	fmt.Println("Image Name:           ", instance.ImageName)
+	fmt.Println("Private IPv4 address: ", instance.PrivateIPv4Address)
+	fmt.Println("Public IPv4 address:  ", instance.PublicIPv4Address)
+	fmt.Println("Local IPv4 address:   ", instance.LocalIPv4Address)
+	fmt.Println("Public IPv6 address:  ", instance.PublicIPv6Address)
+	fmt.Println("IPv6 enabled:         ", instance.IPv6Enabled)
+	fmt.Println("GPN enabled:          ", instance.GPNEnabled)
+	fmt.Println("Backup copies:        ", instance.BackupCopies)
 	fmt.Println()
 }

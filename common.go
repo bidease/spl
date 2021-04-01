@@ -11,10 +11,15 @@ import (
 
 // RequestGet ..
 func RequestGet(path string, out interface{}) (*http.Response, error) {
-	return request(http.MethodGet, path, &out, nil)
+	return request(http.MethodGet, path, 200, &out, nil)
 }
 
-func request(method string, path string, out interface{}, data interface{}) (*http.Response, error) {
+// RequestDelete ..
+func RequestDelete(path string, out interface{}) (*http.Response, error) {
+	return request(http.MethodDelete, path, 202, &out, nil)
+}
+
+func request(method string, path string, trueStatus int, out interface{}, data interface{}) (*http.Response, error) {
 	var req *http.Request
 	var err error
 
@@ -44,7 +49,7 @@ func request(method string, path string, out interface{}, data interface{}) (*ht
 		return nil, err
 	}
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != trueStatus {
 		return nil, fmt.Errorf("response status code: " + res.Status)
 	}
 

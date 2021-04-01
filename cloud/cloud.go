@@ -20,11 +20,13 @@ type Instance struct {
 	ImageName          string `json:"image_name"`
 	PublicIPv4Address  string `json:"public_ipv4_address"`
 	PublicIPv6Address  string `json:"public_ipv6_address"`
+	LocalIPv4Address   string `json:"local_ipv4_address"`
 	PrivateIPv4Address string `json:"private_ipv4_address"`
 	IPv6Enabled        bool   `json:"ipv6_enabled"`
 	GPNEnabled         bool   `json:"gpn_enabled"`
 	CreatedAt          string `json:"created_at"`
 	UpdatedAt          string `json:"updated_at"`
+	BackupCopies       uint   `json:"backup_copies"`
 }
 
 // GetInstances ..
@@ -60,6 +62,18 @@ func GetInstance(id string) (*Instance, error) {
 	var instnce Instance
 
 	_, err := spl.RequestGet(fmt.Sprintf("cloud_computing/instances/%s", id), &instnce)
+	if err != nil {
+		return nil, err
+	}
+
+	return &instnce, nil
+}
+
+// DeleteInstance ..
+func DeleteInstance(id string) (*Instance, error) {
+	var instnce Instance
+
+	_, err := spl.RequestDelete(fmt.Sprintf("cloud_computing/instances/%s", id), &instnce)
 	if err != nil {
 		return nil, err
 	}
